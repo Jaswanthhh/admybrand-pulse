@@ -71,8 +71,9 @@ class AIService {
 
   async chatMessage(message: string, chatHistory: ChatMessage[] = []): Promise<AIResponse> {
     try {
-      const conversationContext = this.buildChatContext(chatHistory);
-      const prompt = `${conversationContext}\n\nUser: ${message}\n\nAssistant:`;
+      const systemPrompt = `You are an AI assistant for ADmyBRAND Insights, a digital marketing analytics platform. 
+You help digital marketing agencies analyze their campaign performance, understand trends, and optimize their strategies.
+Be professional, knowledgeable about digital marketing, and provide actionable insights.`;
       
       const response = await fetch(`${this.baseUrl}?key=${this.apiKey}`, {
         method: 'POST',
@@ -82,15 +83,21 @@ class AIService {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: prompt
+              text: `${systemPrompt}\n\nUser: ${message}\n\nPlease provide a helpful response about digital marketing analytics:`
             }]
           }],
           generationConfig: {
-            temperature: 0.8,
+            temperature: 0.7,
             topK: 40,
             topP: 0.95,
-            maxOutputTokens: 1024,
-          }
+            maxOutputTokens: 512,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
         })
       });
 

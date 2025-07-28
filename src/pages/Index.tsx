@@ -7,6 +7,7 @@ import { ChannelChart } from '@/components/dashboard/ChannelChart';
 import { CampaignTable } from '@/components/dashboard/CampaignTable';
 import { ChatBot } from '@/components/ai/ChatBot';
 import { AIInsightCard } from '@/components/ai/AIInsightCard';
+import { MetricCardSkeleton, ChartSkeleton } from '@/components/ui/loading-skeleton';
 import { Button } from '@/components/ui/enhanced-button';
 import { Badge } from '@/components/ui/badge';
 import dashboardHero from '@/assets/dashboard-hero.jpg';
@@ -33,19 +34,30 @@ const Index = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isChatMinimized, setIsChatMinimized] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(true);
   
   // Your Google AI API Key
   const API_KEY = "AIzaSyCfrp2i7hRLoURsise7pmoqj-kDbR9A5aw";
 
+  // Initial loading simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Real-time updates simulation
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(getRandomMetricUpdate());
-      setLastUpdated(new Date());
-    }, 30000); // Update every 30 seconds
+    if (!isLoading) {
+      const interval = setInterval(() => {
+        setMetrics(getRandomMetricUpdate());
+        setLastUpdated(new Date());
+      }, 15000); // Update every 15 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading]);
 
   const handleRefresh = async () => {
     setIsUpdating(true);
@@ -98,68 +110,96 @@ const Index = () => {
 
         {/* Key Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricCard
-            title="Total Revenue"
-            value={formatCurrency(metrics.revenue)}
-            change={12.5}
-            changeLabel="vs last month"
-            icon={<DollarSign className="w-5 h-5" />}
-            trend="up"
-            variant="accent"
-          />
-          <MetricCard
-            title="Active Users"
-            value={formatNumber(metrics.users)}
-            change={8.2}
-            changeLabel="vs last month"
-            icon={<Users className="w-5 h-5" />}
-            trend="up"
-            variant="success"
-          />
-          <MetricCard
-            title="Conversions"
-            value={formatNumber(metrics.conversions)}
-            change={15.3}
-            changeLabel="vs last month"
-            icon={<Target className="w-5 h-5" />}
-            trend="up"
-            variant="default"
-          />
-          <MetricCard
-            title="Growth Rate"
-            value={`${metrics.growth.toFixed(1)}%`}
-            change={metrics.growth - 20}
-            changeLabel="vs target"
-            icon={<TrendingUp className="w-5 h-5" />}
-            trend={metrics.growth > 20 ? 'up' : 'down'}
-            variant="warning"
-          />
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <MetricCardSkeleton key={i} />
+            ))
+          ) : (
+            <>
+              <MetricCard
+                title="Total Revenue"
+                value={formatCurrency(metrics.revenue)}
+                change={12.5}
+                changeLabel="vs last month"
+                icon={<DollarSign className="w-5 h-5" />}
+                trend="up"
+                variant="accent"
+              />
+              <MetricCard
+                title="Active Users"
+                value={formatNumber(metrics.users)}
+                change={8.2}
+                changeLabel="vs last month"
+                icon={<Users className="w-5 h-5" />}
+                trend="up"
+                variant="success"
+              />
+              <MetricCard
+                title="Conversions"
+                value={formatNumber(metrics.conversions)}
+                change={15.3}
+                changeLabel="vs last month"
+                icon={<Target className="w-5 h-5" />}
+                trend="up"
+                variant="default"
+              />
+              <MetricCard
+                title="Growth Rate"
+                value={`${metrics.growth.toFixed(1)}%`}
+                change={metrics.growth - 20}
+                changeLabel="vs target"
+                icon={<TrendingUp className="w-5 h-5" />}
+                trend={metrics.growth > 20 ? 'up' : 'down'}
+                variant="warning"
+              />
+            </>
+          )}
         </div>
 
         {/* AI Insights Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AIInsightCard
-            title="Revenue Analysis"
-            data={revenueData}
-            context="Revenue Trend Analysis"
-            apiKey={API_KEY}
-          />
-          <AIInsightCard
-            title="Campaign Optimization"
-            data={campaignData.slice(0, 5)}
-            context="Campaign Performance Analysis"
-            apiKey={API_KEY}
-          />
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, i) => (
+              <ChartSkeleton key={i} />
+            ))
+          ) : (
+            <>
+              <AIInsightCard
+                title="Revenue Analysis"
+                data={revenueData}
+                context="Revenue Trend Analysis"
+                apiKey={API_KEY}
+              />
+              <AIInsightCard
+                title="Campaign Optimization"
+                data={campaignData.slice(0, 5)}
+                context="Campaign Performance Analysis"
+                apiKey={API_KEY}
+              />
+            </>
+          )}
         </div>
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RevenueChart />
-          <ChannelChart />
+          {isLoading ? (
+            Array.from({ length: 2 }).map((_, i) => (
+              <ChartSkeleton key={i} />
+            ))
+          ) : (
+            <>
+              <RevenueChart />
+              <ChannelChart />
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          <UserGrowthChart />
+          {isLoading ? (
+            <ChartSkeleton />
+          ) : (
+            <UserGrowthChart />
+          )}
         </div>
 
         {/* Campaign Performance Table */}

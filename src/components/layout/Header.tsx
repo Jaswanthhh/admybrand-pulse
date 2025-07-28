@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/enhanced-button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Settings, User, TrendingUp } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Bell, Settings, User, TrendingUp, Sparkles } from "lucide-react";
 
 export function Header() {
   return (
@@ -17,8 +18,9 @@ export function Header() {
               <p className="text-xs text-primary font-medium">Insights</p>
             </div>
           </div>
-          <Badge variant="outline" className="text-xs">
-            Dashboard v2.0
+          <Badge variant="secondary" className="hidden sm:flex">
+            <Sparkles className="w-3 h-3 mr-1" />
+            AI-Powered
           </Badge>
         </div>
 
@@ -47,6 +49,7 @@ export function Header() {
           <Button variant="ghost" size="icon">
             <Settings className="w-4 h-4" />
           </Button>
+          <ThemeToggle />
           <Button variant="ghost" size="icon">
             <User className="w-4 h-4" />
           </Button>
