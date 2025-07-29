@@ -14,7 +14,7 @@ interface ChatMessage {
 
 class AIService {
   private apiKey: string;
-  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -106,7 +106,9 @@ Be professional, knowledgeable about digital marketing, and provide actionable i
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Chat API Error Response:', errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
