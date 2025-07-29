@@ -19,6 +19,8 @@ export function AIInsightCard({ title, data, context, apiKey, className }: AIIns
   const [isLoading, setIsLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
   const aiService = new AIService(apiKey);
+  
+  console.log('API Key (first 10 chars):', apiKey?.substring(0, 10));
 
   const generateInsight = async () => {
     setIsLoading(true);

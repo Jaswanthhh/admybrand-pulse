@@ -225,7 +225,7 @@ const Index = () => {
         </div>
 
         {/* Campaign Performance Table */}
-        <CampaignTable />
+        <CampaignTable data={dynamicData.campaigns} />
 
         {/* Footer */}
         <footer className="text-center text-muted-foreground text-sm py-8 border-t border-border/50">

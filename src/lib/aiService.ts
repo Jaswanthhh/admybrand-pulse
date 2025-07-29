@@ -47,7 +47,9 @@ class AIService {
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`API request failed: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();

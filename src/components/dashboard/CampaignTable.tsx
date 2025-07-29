@@ -1,21 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/enhanced-button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown, ChevronUp, Search, Download } from 'lucide-react';
 import { campaignData, TableDataRow } from '@/lib/mockData';
+import { ExportButton } from './ExportButton';
 import { cn } from '@/lib/utils';
 
 type SortField = keyof TableDataRow;
 type SortDirection = 'asc' | 'desc';
 
-export function CampaignTable() {
-  const [data, setData] = useState<TableDataRow[]>(campaignData);
+interface CampaignTableProps {
+  data?: TableDataRow[];
+}
+
+export function CampaignTable({ data: propData }: CampaignTableProps) {
+  const [data, setData] = useState<TableDataRow[]>(propData || campaignData);
   const [sortField, setSortField] = useState<SortField>('revenue');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [filter, setFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Update data when props change
+  useEffect(() => {
+    if (propData) {
+      setData(propData);
+    }
+  }, [propData]);
+
   const itemsPerPage = 5;
 
   const handleSort = (field: SortField) => {
@@ -79,10 +92,11 @@ export function CampaignTable() {
       <CardHeader className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
           <CardTitle className="text-xl font-semibold">Campaign Performance</CardTitle>
-          <Button variant="outline" size="sm" className="w-fit">
-            <Download className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
+          <ExportButton 
+            data={sortedData} 
+            filename="campaign-performance" 
+            title="Campaign Performance Report"
+          />
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />

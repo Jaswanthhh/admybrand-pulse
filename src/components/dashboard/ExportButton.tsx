@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/enhanced-button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Download, FileText, FileSpreadsheet } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import jsPDF from 'jspdf';
 import Papa from 'papaparse';
 
@@ -14,6 +14,7 @@ interface ExportButtonProps {
 
 export function ExportButton({ data, filename, title }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
 
   const exportToPDF = async () => {
     setIsExporting(true);
