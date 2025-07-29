@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/enhanced-button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, RefreshCw, TrendingUp, AlertTriangle, CheckCircle } from "lucide-react";
 import { AIService } from '@/lib/aiService';
@@ -22,15 +22,19 @@ export function AIInsightCard({ title, data, context, apiKey, className }: AIIns
 
   const generateInsight = async () => {
     setIsLoading(true);
+    console.log('Generating insight with data:', data, 'context:', context);
     try {
       const response = await aiService.generateInsight(data, context);
+      console.log('AI response:', response);
       if (response.success) {
         setInsight(response.message);
         setHasGenerated(true);
       } else {
+        console.error('AI service returned error:', response.message);
         setInsight('Unable to generate insight. Please check your connection and try again.');
       }
     } catch (error) {
+      console.error('Error in generateInsight:', error);
       setInsight('Error generating insight. Please try again.');
     } finally {
       setIsLoading(false);
@@ -73,8 +77,8 @@ export function AIInsightCard({ title, data, context, apiKey, className }: AIIns
             <Button
               onClick={generateInsight}
               disabled={isLoading}
-              variant="glow"
-              className="w-full"
+              variant="default"
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
             >
               {isLoading ? (
                 <>

@@ -23,6 +23,8 @@ class AIService {
   async generateInsight(data: any, context: string): Promise<AIResponse> {
     try {
       const prompt = this.buildInsightPrompt(data, context);
+      console.log('Generated prompt:', prompt);
+      console.log('Making API call to:', `${this.baseUrl}?key=${this.apiKey.substring(0, 10)}...`);
       
       const response = await fetch(`${this.baseUrl}?key=${this.apiKey}`, {
         method: 'POST',
