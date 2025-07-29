@@ -5,6 +5,7 @@ A modern, visually stunning analytics dashboard for digital marketing agencies f
 ## Project info
 
 **URL**: https://lovable.dev/projects/d64d07c5-443a-46ee-a382-651253803f1a
+**DEPLOYEMENT LINK**: https://preview--admybrand-pulse.lovable.app/
 
 ## How can I edit this code?
 
