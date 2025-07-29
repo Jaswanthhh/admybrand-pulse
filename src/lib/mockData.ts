@@ -177,15 +177,113 @@ export const campaignData: TableDataRow[] = [
   }
 ];
 
-// Real-time updates simulation
+// Enhanced real-time data simulation
+let dataUpdateCounter = 0;
+
 export const getRandomMetricUpdate = () => {
-  const variance = 0.05; // 5% variance
+  dataUpdateCounter++;
+  
+  // Simulate different time periods with different growth patterns
+  const timeOfDay = new Date().getHours();
+  const isBusinessHours = timeOfDay >= 9 && timeOfDay <= 17;
+  const multiplier = isBusinessHours ? 1.2 : 0.8;
+  
   return {
-    revenue: dashboardMetrics.revenue * (1 + (Math.random() - 0.5) * variance),
-    users: dashboardMetrics.users * (1 + (Math.random() - 0.5) * variance),
-    conversions: dashboardMetrics.conversions * (1 + (Math.random() - 0.5) * variance),
-    growth: dashboardMetrics.growth + (Math.random() - 0.5) * 2
+    revenue: dashboardMetrics.revenue + (Math.random() - 0.5) * 10000 * multiplier,
+    users: Math.max(1000, dashboardMetrics.users + Math.floor((Math.random() - 0.5) * 500 * multiplier)),
+    conversions: Math.max(50, dashboardMetrics.conversions + Math.floor((Math.random() - 0.5) * 50 * multiplier)),
+    growth: Math.max(5, Math.min(35, dashboardMetrics.growth + (Math.random() - 0.5) * 5))
   };
+};
+
+// Dynamic revenue data that updates over time
+export const getDynamicRevenueData = () => {
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  
+  return revenueData.map((item, index) => {
+    const variance = (Math.random() - 0.5) * 0.3; // ±30% variance
+    const seasonalBoost = currentMonth === 11 ? 1.5 : 1; // December boost
+    const newValue = item.value * (1 + variance) * seasonalBoost;
+    
+    return {
+      ...item,
+      value: Math.round(newValue)
+    };
+  });
+};
+
+export const getDynamicCampaignData = (): TableDataRow[] => {
+  return campaignData.map(campaign => {
+    const performance = Math.random();
+    const impressionsChange = (Math.random() - 0.5) * 0.2; // ±20%
+    const clicksChange = (Math.random() - 0.5) * 0.15; // ±15%
+    const revenueChange = (Math.random() - 0.5) * 0.25; // ±25%
+    
+    const newImpressions = Math.round(campaign.impressions * (1 + impressionsChange));
+    const newClicks = Math.round(campaign.clicks * (1 + clicksChange));
+    const newRevenue = Math.round(campaign.revenue * (1 + revenueChange));
+    const newCtr = ((newClicks / newImpressions) * 100);
+    
+    // Ensure status is one of the allowed values
+    let newStatus: 'active' | 'paused' | 'completed';
+    if (performance > 0.7) {
+      newStatus = 'active';
+    } else if (performance > 0.3) {
+      newStatus = 'paused';
+    } else {
+      newStatus = 'active';
+    }
+    
+    return {
+      ...campaign,
+      impressions: Math.max(1000, newImpressions),
+      clicks: Math.max(10, newClicks),
+      revenue: Math.max(100, newRevenue),
+      ctr: Math.max(0.1, Math.min(15, newCtr)),
+      status: newStatus
+    };
+  });
+};
+
+// Dynamic user growth data
+export const getDynamicUserGrowthData = () => {
+  const baseGrowth = [45230, 52140, 48960, 61200, 58940, 67890, 72340, 79120, 74560, 83450, 89760, 94320];
+  
+  return baseGrowth.map((value, index) => {
+    const variance = (Math.random() - 0.5) * 0.4; // ±40% variance
+    const trendMultiplier = 1 + (index * 0.02); // Growing trend
+    
+    return {
+      name: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index],
+      value: Math.round(value * (1 + variance) * trendMultiplier),
+      users: Math.round(value * (1 + variance) * trendMultiplier),
+      conversions: Math.round((value * (1 + variance) * trendMultiplier) * 0.2)
+    };
+  });
+};
+
+// Dynamic channel performance data
+export const getDynamicChannelData = () => {
+  const channels = [
+    { name: 'Google Ads', value: 35, revenue: 156250 },
+    { name: 'Facebook Ads', value: 28, revenue: 125000 },
+    { name: 'Instagram Ads', value: 18, revenue: 78750 },
+    { name: 'LinkedIn Ads', value: 12, revenue: 52500 },
+    { name: 'Twitter Ads', value: 7, revenue: 31250 }
+  ];
+  
+  return channels.map(channel => {
+    const variance = (Math.random() - 0.5) * 0.3; // ±30% variance
+    const newValue = Math.max(2, channel.value * (1 + variance));
+    const newRevenue = Math.round(channel.revenue * (1 + variance));
+    
+    return {
+      ...channel,
+      value: Math.round(newValue),
+      revenue: newRevenue
+    };
+  }).sort((a, b) => b.value - a.value); // Keep sorted by performance
 };
 
 export const formatCurrency = (value: number): string => {

@@ -26,7 +26,11 @@ import {
   formatCurrency, 
   formatNumber,
   revenueData,
-  campaignData
+  campaignData,
+  getDynamicRevenueData,
+  getDynamicCampaignData,
+  getDynamicUserGrowthData,
+  getDynamicChannelData
 } from '@/lib/mockData';
 
 const Index = () => {
@@ -35,6 +39,12 @@ const Index = () => {
   const [isChatMinimized, setIsChatMinimized] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
+  const [dynamicData, setDynamicData] = useState({
+    revenue: revenueData,
+    campaigns: campaignData,
+    userGrowth: [],
+    channels: []
+  });
   
   // Your Google AI API Key
   const API_KEY = "AIzaSyCfrp2i7hRLoURsise7pmoqj-kDbR9A5aw";
@@ -47,13 +57,19 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Real-time updates simulation
+  // Real-time updates simulation with dynamic data
   useEffect(() => {
     if (!isLoading) {
       const interval = setInterval(() => {
         setMetrics(getRandomMetricUpdate());
+        setDynamicData({
+          revenue: getDynamicRevenueData(),
+          campaigns: getDynamicCampaignData(),
+          userGrowth: getDynamicUserGrowthData(),
+          channels: getDynamicChannelData()
+        });
         setLastUpdated(new Date());
-      }, 15000); // Update every 15 seconds
+      }, 8000); // Update every 8 seconds for more dynamic feel
 
       return () => clearInterval(interval);
     }
@@ -64,6 +80,12 @@ const Index = () => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     setMetrics(getRandomMetricUpdate());
+    setDynamicData({
+      revenue: getDynamicRevenueData(),
+      campaigns: getDynamicCampaignData(),
+      userGrowth: getDynamicUserGrowthData(),
+      channels: getDynamicChannelData()
+    });
     setLastUpdated(new Date());
     setIsUpdating(false);
   };
@@ -166,13 +188,13 @@ const Index = () => {
             <>
               <AIInsightCard
                 title="Revenue Analysis"
-                data={revenueData}
+                data={dynamicData.revenue}
                 context="Revenue Trend Analysis"
                 apiKey={API_KEY}
               />
               <AIInsightCard
                 title="Campaign Optimization"
-                data={campaignData.slice(0, 5)}
+                data={dynamicData.campaigns.slice(0, 5)}
                 context="Campaign Performance Analysis"
                 apiKey={API_KEY}
               />
